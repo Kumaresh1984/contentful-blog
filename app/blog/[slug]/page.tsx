@@ -1,6 +1,7 @@
 import { createClient } from "contentful";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { BLOCKS } from "@contentful/rich-text-types";
+import type { Block, Inline } from "@contentful/rich-text-types";
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID||'',
@@ -24,8 +25,8 @@ export default async function BlogPage({ params }: { params: { slug: string } })
   const blog:any = res.items[0];
     const richTextOptions = {
     renderNode: {
-        [BLOCKS.EMBEDDED_ASSET]: (node: { data: { target: { fields: { file: any; title: any; }; }; }; }) => {
-        const { file, title } = node.data.target.fields;
+        [BLOCKS.EMBEDDED_ASSET]: (node: Block | Inline) => {
+        const { file, title } = (node.data.target as any).fields;
 
         return (
             <figure style={{ margin: "32px 0", textAlign: "center" }}>
